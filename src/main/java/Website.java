@@ -8,6 +8,9 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class Website {
     WebDriver driver;
+    boolean foundCategory = false;
+    boolean foundProducts = false;
+    String title = null;
 
     public Website() {
         System.setProperty("webdriver.chrome.driver", "/Users/rianneazzopardi/Downloads/chromedriver-mac-x64/chromedriver");
@@ -15,20 +18,25 @@ public class Website {
     }
 
     public void navigateToWebsite(){
+        WebDriverWait wait = new WebDriverWait(driver, 20);
         driver.get("https://www.pullandbear.com/mt/woman-n6417");
-        WebDriverWait wait = new WebDriverWait(driver, 10);
-        WebElement cookiesPopUp = wait.until(ExpectedConditions.elementToBeClickable(By.id("onetrust-accept-btn-handler")));
+        wait.until(ExpectedConditions.titleContains("PULL&BEAR"));
+        WebElement cookiesPopUp = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("onetrust-accept-btn-handler")));
         cookiesPopUp.click();
     }
 
     public void navigateToCategory(String category) {
         String subcategory = getSubCategories(category);
+        WebDriverWait wait = new WebDriverWait(driver, 10);
         // Locating and clicking on first category
         WebElement parentElement = driver.findElement(By.className("c-main-nav"));
-        WebElement childElement = parentElement.findElement(By.cssSelector("[data-component='nav-options']"));
-        WebElement productCategoriesElement = childElement.findElement(By.className("product-categories-and-trending"));
+//        WebElement childElement = parentElement.findElement(By.cssSelector("[data-component='nav-options']"));
+        WebElement productCategoriesElement = parentElement.findElement(By.className("product-categories-and-trending"));
         WebElement categoriesElement = productCategoriesElement.findElement(By.className("product-categories"));
         WebElement anchorTag = productCategoriesElement.findElement(By.xpath(".//li[a/p/span[contains(text(),'" + category + "')]]/a"));
+        if(anchorTag!=null){
+            foundCategory = true;
+        }
         anchorTag.click();
         //Locating and clicking on inner category if products can only be displayed when clicking the subcategory
         if(subcategory!=null) {
@@ -36,29 +44,34 @@ public class Website {
             WebElement subcategoryLink = subcategoriesContainer.findElement(By.xpath(".//li[a/p/span[contains(text(),'" + subcategory + "')]]/a"));
             subcategoryLink.click();
         }
+
+        if(anchorTag != null){
+            foundProducts = true;
+        }
+
     }
 
     public void navigateToFirstProduct() {
         WebElement productGrid = driver.findElement(By.className("m-tiles-box--product-grid"));
         WebElement productGridContainer = productGrid.findElement(By.id("ProductsByCategory"));
-        WebDriverWait wait = new WebDriverWait(driver, 20);
+        WebDriverWait wait = new WebDriverWait(driver, 10);
 
         // Accept that the location is Malta
-        WebElement saveStoreButton = driver.findElement(By.id("saveStore"));
+        WebElement saveStoreButton = wait.until(ExpectedConditions.elementToBeClickable(By.id("saveStore")));
         saveStoreButton.click();
-
-        // Close popup
-        WebElement closeButton = wait.until(ExpectedConditions.presenceOfElementLocated(By.className("pbnl_popupClose")));
-        closeButton.click();
 
         WebElement gridGenerator = wait.until(ExpectedConditions.presenceOfElementLocated(By.tagName("grid-generator")));
 
         // Locate the first legacy-product element within grid-generator
         WebElement firstLegacyProduct = gridGenerator.findElement(By.xpath(".//legacy-product[1]"));
         WebElement productTile = wait.until(ExpectedConditions.elementToBeClickable(By.className("c-tile--product")));
-        WebElement tilesColumn = productTile.findElement(By.className("carousel-item-container"));
+        WebElement tilesColumn = wait.until(ExpectedConditions.elementToBeClickable(By.className("carousel-item-container")));
         JavascriptExecutor executor = (JavascriptExecutor) driver;
         executor.executeScript("arguments[0].click();", tilesColumn);
+
+        // Getting the title to prove that the page actually loaded
+        WebElement titleElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("titleProductCard")));
+        title = titleElement.getText();
     }
 
 
@@ -72,14 +85,14 @@ public class Website {
                 break;
             case "Shoes":
             case "Bags":
-                subcategory = "See all";
-                break;
             case "Accessories":
+                subcategory = "See All";
+                break;
             case "Party":
                 subcategory = null;
                 break;
             default:
-                return null;
+                subcategory = null;
         }
 
         return subcategory;
