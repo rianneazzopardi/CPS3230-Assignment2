@@ -54,7 +54,7 @@ public class Website {
         WebElement gridGenerator = wait.until(ExpectedConditions.presenceOfElementLocated(By.tagName("grid-generator")));
 
         // Locate the first legacy-product element within grid-generator
-        WebElement firstLegacyProduct = gridGenerator.findElement(By.xpath(".//legacy-product[2]"));
+        WebElement firstLegacyProduct = gridGenerator.findElement(By.xpath(".//legacy-product[1]"));
         WebElement productTile = wait.until(ExpectedConditions.elementToBeClickable(By.className("c-tile--product")));
         WebElement tilesColumn = productTile.findElement(By.className("carousel-item-container"));
         JavascriptExecutor executor = (JavascriptExecutor) driver;
