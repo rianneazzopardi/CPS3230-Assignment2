@@ -26,22 +26,36 @@ public class WebsiteSteps {
 
     @Then("I should be taken to {string} category")
     public void iShouldBeTakenToCategory(String arg0) {
+        //do it with title of the page
         Assertions.assertTrue(website.foundCategory);
     }
 
     @And("the category should show at least {int} products")
     public void theCategoryShouldShowAtLeastProducts(int arg0) {
-        Assertions.assertTrue(website.foundProducts);
+       website.getProductsForCategory();
+       Assertions.assertTrue(website.visibleProducts.size() > 0);
     }
 
     @When("I click on the first product in the results")
     public void iClickOnTheFirstProductInTheResults() {
-        website.navigateToFirstProduct();
+        website.selectFirstProduct();
     }
 
     @Then("I should be taken to the details page for that product")
     public void iShouldBeTakenToTheDetailsPageForThatProduct() {
         String title = website.title;
         Assertions.assertNotNull(title);
+    }
+
+    @When("I search for a product using the term {string}")
+    public void iSearchForAProductUsingTheTerm(String arg0) {
+    }
+
+    @Then("I should see the search results")
+    public void iShouldSeeTheSearchResults() {
+    }
+
+    @And("there should be at least {int} products in the search results")
+    public void thereShouldBeAtLeastProductsInTheSearchResults(int arg0) {
     }
 }

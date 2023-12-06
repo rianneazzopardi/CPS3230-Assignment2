@@ -6,10 +6,12 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.List;
+
 public class Website {
     WebDriver driver;
     boolean foundCategory = false;
-    boolean foundProducts = false;
+    List<WebElement> visibleProducts;
     String title = null;
 
     public Website() {
@@ -28,50 +30,55 @@ public class Website {
     public void navigateToCategory(String category) {
         String subcategory = getSubCategories(category);
         WebDriverWait wait = new WebDriverWait(driver, 10);
-        // Locating and clicking on first category
-        WebElement parentElement = driver.findElement(By.className("c-main-nav"));
-//        WebElement childElement = parentElement.findElement(By.cssSelector("[data-component='nav-options']"));
-        WebElement productCategoriesElement = parentElement.findElement(By.className("product-categories-and-trending"));
-        WebElement categoriesElement = productCategoriesElement.findElement(By.className("product-categories"));
-        WebElement anchorTag = productCategoriesElement.findElement(By.xpath(".//li[a/p/span[contains(text(),'" + category + "')]]/a"));
-        if(anchorTag!=null){
+
+        // Locating and clicking on the first category
+        WebElement anchorTag = driver.findElement(By.xpath(".//li[a/p/span[contains(text(),'" + category + "')]]/a"));
+
+        if (anchorTag != null) {
             foundCategory = true;
-        }
-        anchorTag.click();
-        //Locating and clicking on inner category if products can only be displayed when clicking the subcategory
-        if(subcategory!=null) {
-            WebElement subcategoriesContainer = categoriesElement.findElement(By.cssSelector("ul.subitems"));
-            WebElement subcategoryLink = subcategoriesContainer.findElement(By.xpath(".//li[a/p/span[contains(text(),'" + subcategory + "')]]/a"));
-            subcategoryLink.click();
-        }
+            anchorTag.click();
 
-        if(anchorTag != null){
-            foundProducts = true;
+            // Locating and clicking on the inner category if subcategory is not null
+            if (subcategory != null) {
+                WebElement subcategoryLink = anchorTag.findElement(By.xpath(".//ancestor::li/ul[contains(@class, 'subitems')]/li[a/p/span[contains(text(),'" + subcategory + "')]]/a"));
+                subcategoryLink.click();
+            }
         }
-
-    }
-
-    public void navigateToFirstProduct() {
-        WebElement productGrid = driver.findElement(By.className("m-tiles-box--product-grid"));
-        WebElement productGridContainer = productGrid.findElement(By.id("ProductsByCategory"));
-        WebDriverWait wait = new WebDriverWait(driver, 10);
 
         // Accept that the location is Malta
         WebElement saveStoreButton = wait.until(ExpectedConditions.elementToBeClickable(By.id("saveStore")));
         saveStoreButton.click();
 
+    }
+
+    public void getProductsForCategory() {
+        WebDriverWait wait = new WebDriverWait(driver, 10);
         WebElement gridGenerator = wait.until(ExpectedConditions.presenceOfElementLocated(By.tagName("grid-generator")));
-
         // Locate the first legacy-product element within grid-generator
-        WebElement firstLegacyProduct = gridGenerator.findElement(By.xpath(".//legacy-product[1]"));
-        WebElement productTile = wait.until(ExpectedConditions.elementToBeClickable(By.className("c-tile--product")));
-        WebElement tilesColumn = wait.until(ExpectedConditions.elementToBeClickable(By.className("carousel-item-container")));
-        JavascriptExecutor executor = (JavascriptExecutor) driver;
-        executor.executeScript("arguments[0].click();", tilesColumn);
+        List<WebElement> legacyProducts = driver.findElements(By.cssSelector("legacy-product"));
+        this.visibleProducts = legacyProducts;
+        System.out.println(this.visibleProducts.size());
+    }
 
+    public void selectFirstProduct(){
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        // because of UI of the website (in particular the side menu overlapping the first product), the website has to be full screen on 13" devices for this to work
+        this.visibleProducts.get(0).click();
         // Getting the title to prove that the page actually loaded
         WebElement titleElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("titleProductCard")));
         title = titleElement.getText();
+
+    }
+
+
+    public void search(String arguments){
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        WebElement search = driver.findElement(By.className("menu-search"));
+        WebElement searchButton = search.findElement(By.className("c-button"));
+        JavascriptExecutor executor = (JavascriptExecutor) driver;
+        executor.executeScript("arguments[0].click();", searchButton);
+        WebElement searchBar = driver.findElement(By.tagName("search-bar"));
+        System.out.println();
     }
 
 
