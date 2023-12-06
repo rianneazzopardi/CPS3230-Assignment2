@@ -26,7 +26,6 @@ public class WebsiteSteps {
 
     @Then("I should be taken to {string} category")
     public void iShouldBeTakenToCategory(String arg0) {
-        //do it with title of the page
         Assertions.assertTrue(website.foundCategory);
     }
 
@@ -47,15 +46,18 @@ public class WebsiteSteps {
         Assertions.assertNotNull(title);
     }
 
-    @When("I search for a product using the term {string}")
-    public void iSearchForAProductUsingTheTerm(String arg0) {
+    @And("I search for a product using the term {string}")
+    public void iSearchForAProductUsingTheTerm(String arg0) throws InterruptedException {
+        website.search(arg0);
     }
 
     @Then("I should see the search results")
-    public void iShouldSeeTheSearchResults() {
+    public void iShouldSeeTheSearchResults() throws InterruptedException {
+        website.getProductsBySearch();
     }
 
     @And("there should be at least {int} products in the search results")
     public void thereShouldBeAtLeastProductsInTheSearchResults(int arg0) {
+        Assertions.assertTrue(website.visibleProducts.size() > 0);
     }
 }

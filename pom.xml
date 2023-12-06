@@ -36,6 +36,11 @@
             <version>6.9.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.github.sukgu</groupId>
+            <artifactId>automation</artifactId>
+            <version>0.1.4.1</version>
+        </dependency>
     </dependencies>
 
 </project>

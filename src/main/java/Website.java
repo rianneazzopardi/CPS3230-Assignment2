@@ -1,11 +1,10 @@
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import io.github.sukgu.Shadow;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Website {
@@ -15,7 +14,7 @@ public class Website {
     String title = null;
 
     public Website() {
-        System.setProperty("webdriver.chrome.driver", "/Users/rianneazzopardi/Downloads/chromedriver-mac-x64/chromedriver");
+        System.setProperty("webdriver.chrome.driver", "/Users/rianneazzopardi/Downloads/chromedriver-mac-x64 2/chromedriver");
         driver = new ChromeDriver();
     }
 
@@ -60,7 +59,7 @@ public class Website {
         System.out.println(this.visibleProducts.size());
     }
 
-    public void selectFirstProduct(){
+    public void selectFirstProduct() {
         WebDriverWait wait = new WebDriverWait(driver, 10);
         // because of UI of the website (in particular the side menu overlapping the first product), the website has to be full screen on 13" devices for this to work
         this.visibleProducts.get(0).click();
@@ -71,14 +70,29 @@ public class Website {
     }
 
 
-    public void search(String arguments){
-        WebDriverWait wait = new WebDriverWait(driver, 10);
-        WebElement search = driver.findElement(By.className("menu-search"));
-        WebElement searchButton = search.findElement(By.className("c-button"));
+    public void search(String arguments) throws InterruptedException {
+        WebDriverWait wait = new WebDriverWait(driver, 20);
+        WebElement search = wait.until(ExpectedConditions.presenceOfElementLocated(By.className("menu-search")));
+        WebElement searchButton = wait.until(ExpectedConditions.presenceOfElementLocated(By.className("c-button")));
+        Thread.sleep(5000);
         JavascriptExecutor executor = (JavascriptExecutor) driver;
         executor.executeScript("arguments[0].click();", searchButton);
-        WebElement searchBar = driver.findElement(By.tagName("search-bar"));
-        System.out.println();
+        Thread.sleep(5000);
+        WebElement searchApp = wait.until(ExpectedConditions.presenceOfElementLocated(By.tagName("search-app")));
+        Thread.sleep(8000);
+        searchApp.sendKeys(arguments);
+        Thread.sleep(3000);
+        searchApp.sendKeys(Keys.ENTER);
+    }
+
+    public void getProductsBySearch() throws InterruptedException {
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        Shadow shadow = new Shadow(driver);
+        WebElement section = shadow.findElement("search-app>search-grid>section");
+        Thread.sleep(3000);
+        WebElement results = section.findElement(By.cssSelector("section"));
+        List<WebElement> gridProducts = results.findElements(By.cssSelector("grid-product"));
+        this.visibleProducts = gridProducts;
     }
 
 

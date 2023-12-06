@@ -15,4 +15,7 @@ Then I should be taken to the details page for that product
 Examples:
 |type|
 |Party   |
-
+|Clothing  |
+|New  |
+|Online Exclusive |
+|Pacific Republic|
