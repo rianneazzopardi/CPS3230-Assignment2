@@ -1,3 +1,4 @@
+import io.cucumber.java.sl.In;
 import io.github.sukgu.Shadow;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -97,32 +98,69 @@ public class Website {
 
     public void selectingSize() throws InterruptedException {
         WebDriverWait wait = new WebDriverWait(driver, 10);
-        Thread.sleep((5000));
         Shadow shadow = new Shadow(driver);
-        //selecting size
+        Thread.sleep((2000));
         WebElement sizeSelector = shadow.findElement("size-selector-with-length>size-selector-select");
         sizeSelector.click();
+        // because of animation
         Thread.sleep((2000));
-        List<WebElement> sizes = shadow.findElements("size-list>ul>li");
-        WebElement sizeXS = sizes.get(0);
-        WebElement sizeButton = sizeXS.findElement(By.className("size"));
-        sizeButton.click();
+        // catering for if not in stock
+        if(sizeSelector.getText().contains("Notify")){
+            List<WebElement> sizes = shadow.findElements("size-list>ul>li");
+            WebElement sizeXS = sizes.get(0);
+            WebElement sizeButton = sizeXS.findElement(By.className("size"));
+            sizeButton.click();
+            WebElement closeButton = shadow.findElement("main>button");
+            closeButton.click();
+
+            // because of animation
+            Thread.sleep((2000));
+
+            addToWishlist();
+        }
+        else if(sizeSelector.getText().contains("Similar")){
+            List<WebElement> sizes = shadow.findElements("size-list>ul>li");
+            WebElement sizeXS = sizes.get(0);
+            WebElement sizeButton = sizeXS.findElement(By.className("size"));
+            sizeButton.click();
+            WebElement closeButton = shadow.findElement("main>button");
+            closeButton.click();
+
+            // because of animation
+            Thread.sleep((2000));
+
+            addToWishlist();
+        }
+        else{
+            List<WebElement> sizes = shadow.findElements("size-list>ul>li");
+            WebElement sizeXS = sizes.get(0);
+            WebElement sizeButton = sizeXS.findElement(By.className("size"));
+            sizeButton.click();
+        }
     }
 
     public void addToCart() throws InterruptedException{
         WebDriverWait wait = new WebDriverWait(driver, 10);
-        WebElement buttons = driver.findElement(By.className("c-product-info--buttons-container"));
+        WebElement buttons =  wait.until(ExpectedConditions.presenceOfElementLocated(By.className("c-product-info--buttons-container")));
         WebElement addToBasket = buttons.findElement(By.tagName("button"));
-        Thread.sleep((2000));
+        // because of animation
+        Thread.sleep(2000);
         addToBasket.click();
     }
 
     public void addToWishlist() throws InterruptedException{
         WebDriverWait wait = new WebDriverWait(driver, 10);
-        WebElement buttons = driver.findElement(By.className("c-product-info--buttons-container"));
-        WebElement addToWishlist= buttons.findElement(By.tagName("add-to-wishlist-button"));
-        Thread.sleep((2000));
+        WebElement addToWishlist= wait.until(ExpectedConditions.presenceOfElementLocated(By.tagName("add-to-wishlist-button")));
         addToWishlist.click();
+    }
+
+    public void goToCart() throws InterruptedException{
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        // because of animations
+        Thread.sleep(5000);
+        WebElement goToCartButton = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("buttonShopCart")));
+        goToCartButton.click();
+        System.out.println();
     }
 
     public String getSubCategories(String category) {

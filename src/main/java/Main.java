@@ -6,8 +6,9 @@ public class Main {
         website.getProductsForCategory();
         website.selectFirstProduct();
         website.selectingSize();
-//        website.addToCart();
-        website.addToWishlist();
+        website.addToCart();
+//        website.addToWishlist();
+        website.goToCart();
 
 ////        website.search("Party");
 ////        website.getProductsBySearch();
