@@ -9,6 +9,7 @@ public class Main {
         website.addToCart();
 //        website.addToWishlist();
         website.goToCart();
+        website.removeItemFromCart();
 
 ////        website.search("Party");
 ////        website.getProductsBySearch();

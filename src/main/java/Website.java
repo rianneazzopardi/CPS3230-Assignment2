@@ -160,8 +160,19 @@ public class Website {
         Thread.sleep(5000);
         WebElement goToCartButton = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("buttonShopCart")));
         goToCartButton.click();
-        System.out.println();
     }
+
+    public void removeItemFromCart() throws InterruptedException{
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        Shadow shadow = new Shadow(driver);
+        List<WebElement> cartList = driver.findElements(By.className("cart-list"));
+        WebElement firstElement = shadow.findElement("div#cart-actions");
+        WebElement remove = firstElement.findElement(By.className("deleteItem"));
+        WebElement removeButton = remove.findElement(By.tagName("button"));
+        removeButton.click();
+
+    }
+
 
     public String getSubCategories(String category) {
         String subcategory = null;
