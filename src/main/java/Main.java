@@ -5,9 +5,12 @@ public class Main {
         website.navigateToCategory("Online Exclusive");
         website.getProductsForCategory();
         website.selectFirstProduct();
+        website.selectingSize();
+//        website.addToCart();
+        website.addToWishlist();
 
-//        website.search("Party");
-//        website.getProductsBySearch();
-//        website.selectFirstProduct();
+////        website.search("Party");
+////        website.getProductsBySearch();
+////        website.selectFirstProduct();
     }
 }
