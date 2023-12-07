@@ -123,9 +123,8 @@ public class Website {
         WebElement addToWishlist= buttons.findElement(By.tagName("add-to-wishlist-button"));
         Thread.sleep((2000));
         addToWishlist.click();
-        System.out.println();
     }
-    
+
     public String getSubCategories(String category) {
         String subcategory = null;
 
