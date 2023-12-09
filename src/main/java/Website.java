@@ -13,10 +13,20 @@ public class Website {
     boolean foundCategory = false;
     List<WebElement> visibleProducts;
     String title = null;
+    boolean addedToWishlist = false;
+    boolean addedToCart = false;
+    boolean searchComplete = false;
+    boolean goneToCategory = false;
 
     public Website() {
         System.setProperty("webdriver.chrome.driver", "/Users/rianneazzopardi/Downloads/chromedriver-mac-x64 2/chromedriver");
         driver = new ChromeDriver();
+    }
+
+    public Website(boolean isModel) {
+        System.setProperty("webdriver.chrome.driver", "/Users/rianneazzopardi/Downloads/chromedriver-mac-x64 2/chromedriver");
+        driver = new ChromeDriver();
+        navigateToWebsite();
     }
 
     public void navigateToWebsite(){
@@ -58,6 +68,7 @@ public class Website {
         List<WebElement> legacyProducts = driver.findElements(By.cssSelector("legacy-product"));
         this.visibleProducts = legacyProducts;
         System.out.println(this.visibleProducts.size());
+        goneToCategory = true;
     }
 
     public void selectFirstProduct() {
@@ -84,6 +95,7 @@ public class Website {
         searchApp.sendKeys(arguments);
         Thread.sleep(3000);
         searchApp.sendKeys(Keys.ENTER);
+        searchComplete = true;
     }
 
     public void getProductsBySearch() throws InterruptedException {
@@ -146,12 +158,14 @@ public class Website {
         // because of animation
         Thread.sleep(2000);
         addToBasket.click();
+        addedToCart = true;
     }
 
     public void addToWishlist() throws InterruptedException{
         WebDriverWait wait = new WebDriverWait(driver, 10);
         WebElement addToWishlist= wait.until(ExpectedConditions.presenceOfElementLocated(By.tagName("add-to-wishlist-button")));
         addToWishlist.click();
+        addedToWishlist = true;
     }
 
     public void goToCart() throws InterruptedException{
@@ -170,7 +184,10 @@ public class Website {
         WebElement remove = firstElement.findElement(By.className("deleteItem"));
         WebElement removeButton = remove.findElement(By.tagName("button"));
         removeButton.click();
-
+        addedToCart = false;
+        Thread.sleep(5000);
+        WebElement closeCart = driver.findElement(By.id("close-shopcart"));
+        closeCart.click();
     }
 
 
