@@ -131,7 +131,7 @@ public class WebsiteModelTest implements FsmModel {
     }
 
     @Test
-    public void BulbOperatorModelRunner() {
+    public void WebsiteOperatorModelRunner() {
         final GreedyTester tester = new GreedyTester(new WebsiteModelTest());
         tester.setRandom(new Random());
         tester.buildGraph();

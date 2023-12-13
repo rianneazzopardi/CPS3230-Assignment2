@@ -3,13 +3,13 @@ public class Main {
         Website website = new Website();
         website.navigateToWebsite();
         website.navigateToCategory("Online Exclusive");
-        website.getProductsForCategory();
-        website.selectFirstProduct();
-        website.selectingSize();
-        website.addToCart();
+//        website.getProductsForCategory();
+//        website.selectFirstProduct();
+//        website.selectingSize();
+//        website.addToCart();
 //        website.addToWishlist();
-        website.goToCart();
-        website.removeItemFromCart();
+//        website.goToCart();
+//        website.removeItemFromCart();
 
 ////        website.search("Party");
 ////        website.getProductsBySearch();
